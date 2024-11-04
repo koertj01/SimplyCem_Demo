@@ -1,0 +1,115 @@
+.not-found-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f8f9fa;
+    text-align: center;
+    color: #333;
+    font-family: 'Roboto', sans-serif;
+  }
+  
+  .not-found {
+    max-width: 600px;
+  }
+  
+  .not-found-title {
+    font-size: 10rem;
+    margin: 0;
+    color: #FF6B6B;
+    animation: float 1.5s infinite ease-in-out;
+  }
+  
+  .not-found-description {
+    font-size: 1.5rem;
+    margin: 20px 0;
+    color: #666;
+  }
+  
+  .not-found-animation {
+    margin: 40px 0;
+    position: relative;
+  }
+  
+  .ghost {
+    width: 150px;
+    height: 150px;
+    background: #fff;
+    border-radius: 100px 100px 0 0;
+    position: relative;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+    animation: float 3s infinite ease-in-out;
+  }
+  
+  .ghost:before, .ghost:after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    width: 40px;
+    height: 20px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+  }
+  
+  .ghost:before {
+    left: 30px;
+  }
+  
+  .ghost:after {
+    right: 30px;
+  }
+  
+  .face {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+  
+  .eye {
+    width: 10px;
+    height: 10px;
+    background: #333;
+    border-radius: 50%;
+    margin: 0 10px;
+    animation: blink 2s infinite ease-in-out;
+  }
+  
+  .eye.right {
+    margin-left: 20px;
+  }
+  
+  .mouth {
+    width: 20px;
+    height: 10px;
+    border-radius: 10px;
+    background: #333;
+    margin-top: 10px;
+  }
+  
+  @keyframes float {
+    0% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes blink {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(0.5);
+    }
+  }
+  

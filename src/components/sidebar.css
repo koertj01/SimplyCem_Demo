@@ -1,0 +1,25 @@
+.menu-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .menu-item:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .menu-item .icon {
+    margin-right: 10px;
+    flex-shrink: 0; /* Prevents the icon from shrinking */
+  }
+  
+  .menu-item .text {
+    flex-grow: 1; /* Allows the text/image to take up the remaining space */
+  }
+  
+  .menu-item .padding {
+    margin-left: 10px;
+    flex-shrink: 0; /* Prevents the padding div from shrinking */
+  }
