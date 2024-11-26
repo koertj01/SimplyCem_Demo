@@ -1,20 +1,30 @@
 // router.tsx
-import { createBrowserRouter } from 'react-router-dom';
-import App from './App';
-import NotFound from './components/NotFound';
+// import App from './App';
+// import NotFound from './components/NotFound';
+import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import Dashboard from './components/Dashboard';
 import SignInPage from './components/SignInPage';
 import Form from './components/ReactHookForm';
 import { SignedIn, SignedOut, RedirectToSignIn } from '@clerk/clerk-react';
+import { ActivityLogComponent } from './components/EventViewer/ActivityMoniter';
+
+
+
+const App = () => {
+  return (
+    <div>
+      <header>Header (optional)</header>
+      <Outlet />
+      <footer>Footer (optional)</footer>
+    </div>
+  );
+};
 
 const router = createBrowserRouter([
   {
-    element: <App />,  // App as the layout component, no path specified
+    element: <App />,
     children: [
-      {
-        path: "/",       // Root path renders without NavBar
-        element: <SignInPage />,
-      },
+      { path: "/", element: <SignInPage /> },
       {
         path: "dashboard",
         element: (
@@ -42,11 +52,15 @@ const router = createBrowserRouter([
         errorElement: <RedirectToSignIn />,
       },
       {
-        path: "*",
-        element: <NotFound />,
+        path: "activity",
+        element: (
+          <SignedIn>
+            <ActivityLogComponent />
+          </SignedIn>
+        ),
       },
+      { path: "*", element: <NotFound /> },
     ],
   },
 ]);
 
-export default router;
