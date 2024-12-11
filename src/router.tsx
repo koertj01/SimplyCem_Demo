@@ -1,16 +1,14 @@
-// router.tsx
-// import App from './App';
-// import NotFound from './components/NotFound';
+import React from "react";
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
-import Dashboard from './components/Dashboard';
-import SignInPage from './components/SignInPage';
-import Form from './components/ReactHookForm';
-import { SignedIn, SignedOut, RedirectToSignIn } from '@clerk/clerk-react';
-import { ActivityLogComponent } from './components/EventViewer/ActivityMoniter';
+import Dashboard from "./components/Dashboard";
+import SignInPage from "./components/SignInPage";
+import Form from "./components/ReactHookForm";
+import { SignedIn, SignedOut, RedirectToSignIn } from "@clerk/clerk-react";
+import { ActivityLogComponent } from "./components/EventViewer/ActivityMoniter";
+import NotFound from "./components/Notfound";
+import App from './App';
 
-
-
-const App = () => {
+const ErrorApp = () => {
   return (
     <div>
       <header>Header (optional)</header>
@@ -24,7 +22,11 @@ const router = createBrowserRouter([
   {
     element: <App />,
     children: [
-      { path: "/", element: <SignInPage /> },
+      { 
+        path: "/", 
+        element: <SignInPage />, 
+        errorElement: <ErrorApp />,
+      },
       {
         path: "dashboard",
         element: (
@@ -45,9 +47,9 @@ const router = createBrowserRouter([
       {
         path: "form",
         element: (
-          <SignedIn>
+          // <SignedIn>
             <Form />
-          </SignedIn>
+          // </SignedIn>
         ),
         errorElement: <RedirectToSignIn />,
       },
@@ -64,3 +66,4 @@ const router = createBrowserRouter([
   },
 ]);
 
+export default router;

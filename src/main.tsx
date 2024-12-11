@@ -4,7 +4,7 @@ import { StrictMode } from "react";
 import "./index.css";
 
 import { ClerkProvider } from "@clerk/clerk-react";
-import router from "./router";
+import router from './router';
 
 import { RouterProvider } from "react-router-dom";
 import { createTheme, ThemeProvider } from "@mui/material";
