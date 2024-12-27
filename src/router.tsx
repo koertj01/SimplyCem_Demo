@@ -1,67 +1,24 @@
-import React from "react";
-import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
+import { createBrowserRouter } from 'react-router-dom';
+
 import Dashboard from "./components/Dashboard";
 import SignInPage from "./components/SignInPage";
-import Form from "./components/ReactHookForm";
-import { SignedIn, SignedOut, RedirectToSignIn } from "@clerk/clerk-react";
-import { ActivityLogComponent } from "./components/EventViewer/ActivityMoniter";
-import NotFound from "./components/Notfound";
-import App from './App';
 
-const ErrorApp = () => {
-  return (
-    <div>
-      <header>Header (optional)</header>
-      <Outlet />
-      <footer>Footer (optional)</footer>
-    </div>
-  );
-};
+import HomePage from './components/Homepage';
 
 const router = createBrowserRouter([
   {
-    element: <App />,
+    path: "/",
+    element: <HomePage />, // Separate component for the root
+  },
+  {
+    path: "/app",
+    element: <Dashboard />, // Layout with menu bar
     children: [
-      { 
-        path: "/", 
-        element: <SignInPage />, 
-        errorElement: <ErrorApp />,
-      },
-      {
-        path: "dashboard",
-        element: (
-          <SignedIn>
-            <Dashboard />
-          </SignedIn>
-        ),
-        errorElement: <RedirectToSignIn />,
-      },
       {
         path: "signin",
-        element: (
-          <SignedOut>
-            <SignInPage />
-          </SignedOut>
-        ),
+        element: <SignInPage />,
       },
-      {
-        path: "form",
-        element: (
-          // <SignedIn>
-            <Form />
-          // </SignedIn>
-        ),
-        errorElement: <RedirectToSignIn />,
-      },
-      {
-        path: "activity",
-        element: (
-          <SignedIn>
-            <ActivityLogComponent />
-          </SignedIn>
-        ),
-      },
-      { path: "*", element: <NotFound /> },
+      // Add more child routes here
     ],
   },
 ]);
