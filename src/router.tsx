@@ -1,12 +1,12 @@
+import { RedirectToSignIn, SignedIn, SignedOut } from "@clerk/clerk-react";
 import { createBrowserRouter } from "react-router-dom";
 
 import Dashboard from "./components/Dashboard";
 import SignInPage from "./components/SignInPage";
-
+import MappingTools from "./components/Mapping/MappingTools";
 import HomePage from "./components/Homepage";
-import { RedirectToSignIn, SignedIn, SignedOut } from "@clerk/clerk-react";
-import ProtectedLogin from "./components/ProtectedLogin";
-import { Box } from "@mui/material";
+import MappingPage from "./components/Mapping/MappingPage";
+
 
 const router = createBrowserRouter([
   {
@@ -34,6 +34,14 @@ const router = createBrowserRouter([
           </SignedOut>
         ),
       },
+      {
+        path: "mapping",
+        element: (
+          <SignedIn>
+            <MappingPage />
+          </SignedIn>
+        )
+      }
       // Add more child routes here
     ],
   },

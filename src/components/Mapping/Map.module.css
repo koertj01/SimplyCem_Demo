@@ -1,13 +1,19 @@
 .mapWrap {
     position: relative;
-    width: 100%;
-    height: 100vh;
-    z-index: 7;
-}
-
-.map {
-    position: absolute;
-    width: 100%;
     height: 100%;
-    z-index: 7;
-}
+  }
+  .map {
+    width: 100%;
+    height: 500px; /* Or any desired height */
+  }
+  .toggleButton {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 1000;
+    padding: 10px 20px;
+    background-color: #fff;
+    border: none;
+    cursor: pointer;
+  }
+  
