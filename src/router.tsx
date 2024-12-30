@@ -7,6 +7,8 @@ import HomePage from "./components/Homepage";
 import { RedirectToSignIn, SignedIn, SignedOut } from "@clerk/clerk-react";
 import ProtectedLogin from "./components/ProtectedLogin";
 import { Box } from "@mui/material";
+import MappingPage from "./components/Mapping/MappingPage";
+import { WorkOrderForm } from "./components/WorkOrders/WorkOrderForm";
 
 const router = createBrowserRouter([
   {
@@ -34,6 +36,22 @@ const router = createBrowserRouter([
           </SignedOut>
         ),
       },
+      {
+        path: "mapping",
+        element: (
+          <SignedIn>
+            <MappingPage />
+          </SignedIn>
+        )
+      },
+      {
+        path: "work_orders",
+        element: (
+          <SignedIn>
+            <WorkOrderForm />
+          </SignedIn>
+        )
+      }
       // Add more child routes here
     ],
   },
