@@ -1,7 +1,6 @@
 import Map from "./Map"
 import MappingTools from "./MappingTools"
 
-
 function MappingPage() {
   return (
     <>
