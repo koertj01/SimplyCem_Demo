@@ -13,15 +13,16 @@ import {
 import { Router, RouterProvider } from "react-router-dom";
 import router from "./router";
 import { ClerkProvider } from "@clerk/clerk-react";
+import { useToggleState } from "./utils/UseToggleState";
 
 export default function App() {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, toggleDarkMode] = useToggleState(false); //Use custom hook to setup a toggle state
 
   const theme = createTheme(isDarkMode ? darkThemeOptions : lightThemeOptions);
 
   const handleThemeChange = () => {
     console.log("Changing theme...");
-    setIsDarkMode((prev) => !prev);
+    toggleDarkMode();
   };
 
   const clerkPublishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
