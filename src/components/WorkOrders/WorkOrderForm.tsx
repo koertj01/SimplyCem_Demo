@@ -16,6 +16,7 @@ import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 import DataTable from "../DataTable";
+import { createToolbar } from "./WorkOrderToolbar";
 
 const columns = [
   { key: "scheduleDate", header: "Schedule Date" },
@@ -83,6 +84,12 @@ type FormValues = {
   wo_request: string;
 };
 
+const tabConfig = [
+  { label: "All Orders", value: "all" },
+  { label: "Pending", value: "pending" },
+  { label: "Completed", value: "completed" },
+];
+
 export const WorkOrderForm: React.FC = () => {
   const {
     control,
@@ -90,6 +97,16 @@ export const WorkOrderForm: React.FC = () => {
     formState: { errors },
   } = useForm<FormValues>();
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+
+  const [filters, setFilters] = React.useState({
+    startDate: "",
+    endDate: "",
+    selectedTab: "all",
+  });
+
+  const handleFilterChange = (updates: Partial<typeof filters>) => {
+    setFilters((prev) => ({ ...prev, ...updates }));
+  };
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -109,15 +126,14 @@ export const WorkOrderForm: React.FC = () => {
 
   return (
     <>
-      <Stack
-        alignItems={"Center"}
-      >
-        <Toolbar 
-          sx={{ 
-            display: "flex", 
+      <Stack alignItems={"Center"}>
+        <Toolbar
+          sx={{
+            display: "flex",
             justifyContent: "flex-end",
-            gap: 1
-          }}>
+            gap: 1,
+          }}
+        >
           <Button
             variant="contained"
             startIcon={<AddIcon />}
@@ -131,7 +147,17 @@ export const WorkOrderForm: React.FC = () => {
         </Toolbar>
 
         <Container>
-          <DataTable data={dummyData} columns={columns} />
+          <DataTable
+            data={dummyData}
+            columns={columns}
+            toolbar={createToolbar({
+              tabConfig,
+              selectedTab: filters.selectedTab,
+              startDate: filters.startDate,
+              endDate: filters.endDate,
+              onChange: handleFilterChange,
+            })}
+          />
         </Container>
       </Stack>
 
@@ -142,10 +168,7 @@ export const WorkOrderForm: React.FC = () => {
         onClose={handleClose}
         anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
       >
-        <Box
-         maxWidth="sm"
-         p={2}
-        >
+        <Box maxWidth="sm" p={2}>
           <Typography variant="h4" gutterBottom>
             Create Work Order
           </Typography>
