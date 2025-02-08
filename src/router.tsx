@@ -1,4 +1,3 @@
-import { RedirectToSignIn, SignedIn, SignedOut } from "@clerk/clerk-react";
 import { createBrowserRouter } from "react-router-dom";
 import Dashboard from "./components/Dashboard";
 import SignInPage from "./components/SignInPage";
