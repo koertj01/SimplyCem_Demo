@@ -6,8 +6,9 @@ import MapIcon from "@mui/icons-material/Map";
 
 export default function DashboardLayout() {
   return (
-    <Box>
-      <AppBar position="static">
+    <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+      {/* Fixed AppBar */}
+      <AppBar position="fixed">
         <Toolbar
           sx={{
             display: "flex",
@@ -22,16 +23,17 @@ export default function DashboardLayout() {
           </Box>
 
           {/* Right Section */}
-          <Box sx={{ display: "flex", alignItems: "flex-start" }}>
-            <SignOutButton />
-          </Box>
+          <SignOutButton />
         </Toolbar>
       </AppBar>
-      
-      <Box component="main" sx={{ p: 3 }}>
+
+      {/* Main Content with padding to prevent overlap */}
+      <Box component="main" sx={{ flexGrow: 1, pt: { xs: 8, sm: 10 }, px: 3 }}>
         <Outlet />
       </Box>
-      <Box sx={{ mt: 3 }}>
+
+      {/* Footer Section */}
+      <Box sx={{ mt: "auto", p: 3, textAlign: "center" }}>
         Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nobis
         dignissimos non ad, in nam nulla cupiditate delectus aut sunt? Quas
         placeat perspiciatis itaque modi voluptatum officia eaque iste sapiente
@@ -39,4 +41,5 @@ export default function DashboardLayout() {
       </Box>
     </Box>
   );
-}
+};
+

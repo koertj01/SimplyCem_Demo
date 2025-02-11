@@ -8,6 +8,7 @@ import { RedirectToSignIn, SignedIn, SignedOut } from "@clerk/clerk-react";
 // import { Box } from "@mui/material";
 import MappingPage from "./components/Mapping/MappingPage";
 import { WorkOrderForm } from "./components/WorkOrders/WorkOrderForm";
+import SettingsPage from "./components/Settings/SettingsPage";
 
 
 const router = createBrowserRouter([
@@ -49,6 +50,14 @@ const router = createBrowserRouter([
         element: (
           <SignedIn>
             <WorkOrderForm />
+          </SignedIn>
+        )
+      },
+      {
+        path: "settings",
+        element: (
+          <SignedIn>
+            <SettingsPage />
           </SignedIn>
         )
       }
