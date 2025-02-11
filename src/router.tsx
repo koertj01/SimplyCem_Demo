@@ -1,9 +1,12 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { RedirectToSignIn, SignedIn, SignedOut } from "@clerk/clerk-react";
+import { createBrowserRouter } from "react-router-dom";
 
 import Dashboard from "./components/Dashboard";
 import SignInPage from "./components/SignInPage";
+import MappingTools from "./components/Mapping/MappingTools";
+import HomePage from "./components/Homepage";
+import MappingPage from "./components/Mapping/MappingPage";
 
-import HomePage from './components/Homepage';
 
 const router = createBrowserRouter([
   {
@@ -12,15 +15,35 @@ const router = createBrowserRouter([
   },
   {
     path: "/app",
-    element: <Dashboard />, // Layout with menu bar
+    element: (
+      <>
+        <SignedIn>
+          <Dashboard />
+        </SignedIn>
+        <SignedOut>
+          <RedirectToSignIn />
+        </SignedOut>
+      </>
+    ),
     children: [
       {
         path: "signin",
-        element: <SignInPage />,
+        element: (
+          <SignedOut>
+            <SignInPage /> {/* Sign-in page */}
+          </SignedOut>
+        ),
       },
+      {
+        path: "mapping",
+        element: (
+          <SignedIn>
+            <MappingPage />
+          </SignedIn>
+        )
+      }
       // Add more child routes here
     ],
   },
 ]);
-
 export default router;
