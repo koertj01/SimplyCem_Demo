@@ -2,7 +2,7 @@ export interface Grave {
   longitude: number; // Geographic longitude
   latitude: number; // Geographic latitude
   property_id: number; // Property ID
-  split: boolean; // Binary state (e.g., shared grave)
+  split: string; // Binary state (e.g., shared grave)
   property_type: string; // Type of property (e.g., Residential)
   cemetery: string; // Cemetery name or identifier
   section: string; // Cemetery section

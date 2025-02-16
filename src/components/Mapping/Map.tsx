@@ -21,66 +21,40 @@ interface MapProps {
 }
 
 const Map: React.FC<MapProps> = ({ coordinates = [] }) => {
+  // Define the shape of the filtered grave entries
 
-    // Define the shape of the filtered grave entries
-
-  
   // Update state type
   const [graveData, setGraveData] = useState<Grave[] | null>(null);
-  
+
   // data layer
+  const [sections, setSections] = useState<string[]>([]);
+  const [blocks, setBlocks] = useState<string[]>([]);
+  const [rows, setRows] = useState<string[]>([]);
+  const [lots, setLots] = useState<string[]>([]);
+  const [graves, setGraves] = useState<string[]>([]);
+
   async function fetchGraveEntries() {
     const { data, error } = await supabase
       .from("grave_entries")
-      .select(`
-        longitude,
-        latitude,
-        property_id,
-        split,
-        property_type,
-        cemetery,
-        section,
-        block,
-        row,
-        lot,
-        grave
-      `);
-  
+      .select("section, block, row, lot, grave");
+
     if (error) {
       console.error("Error fetching grave entries:", error);
       return;
     }
 
-    // Log the raw data
-    console.log("Fetched Grave Data:", data);
-  
-    // Ensure data matches the GraveEntry structure
     if (data) {
-      const formattedData: Grave[] = data.map((item) => ({
-        longitude: item.longitude,
-        latitude: item.latitude,
-        property_id: item.property_id,
-        split: item.split,
-        property_type: item.property_type,
-        cemetery: item.cemetery,
-        section: item.section,
-        block: item.block,
-        row: item.row,
-        lot: item.lot,
-        grave: item.grave
-      }));
-  
-      setGraveData(formattedData);
-    } else {
-      setGraveData(null);
+      setSections([...new Set(data.map((item) => item.section))]);
+      setBlocks([...new Set(data.map((item) => item.block))]);
+      setRows([...new Set(data.map((item) => item.row))]);
+      setLots([...new Set(data.map((item) => item.lot))]);
+      setGraves([...new Set(data.map((item) => item.grave))]);
     }
   }
-  
-  //TODO fetch entries on load, we should optimize this later, we should also refetch data when a change is made
-  useEffect(()=>{
-    fetchGraveEntries();
-  }, [])
 
+  useEffect(() => {
+    fetchGraveEntries();
+  }, []);
 
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
