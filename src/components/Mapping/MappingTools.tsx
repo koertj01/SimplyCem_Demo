@@ -14,15 +14,36 @@ interface MappingToolsProps {
   blocks: string[];
   rows: string[];
   lots: string[];
-  graves: string[];
+  graves: { id: number; label: string }[];
+  selectedSection: string | null;
+  selectedBlock: string | null;
+  selectedRow: string | null;
+  selectedLot: string | null;
+  selectedGrave: number | null;
+  setSelectedSection: (value: string | null) => void;
+  setSelectedBlock: (value: string | null) => void;
+  setSelectedRow: (value: string | null) => void;
+  setSelectedLot: (value: string | null) => void;
+  setSelectedGrave: (value: number | null) => void;
 }
 
-const MappingTools: React.FC<MappingToolsProps> = ({ sections, blocks, rows, lots, graves }) => {
-  const [selectedSection, setSelectedSection] = useState<string>("");
-  const [selectedBlock, setSelectedBlock] = useState<string>("");
-  const [selectedRow, setSelectedRow] = useState<string>("");
-  const [selectedLot, setSelectedLot] = useState<string>("");
-  const [selectedGrave, setSelectedGrave] = useState<string>("");
+const MappingTools: React.FC<MappingToolsProps> = ({ 
+  sections,
+  blocks,
+  rows,
+  lots,
+  graves,
+  selectedSection,
+  selectedBlock,
+  selectedRow,
+  selectedLot,
+  selectedGrave,
+  setSelectedSection,
+  setSelectedBlock,
+  setSelectedRow,
+  setSelectedLot,
+  setSelectedGrave, 
+}) => {
 
   useEffect(() => {
     console.log({ sections, blocks, rows, lots, graves });
@@ -88,19 +109,22 @@ const MappingTools: React.FC<MappingToolsProps> = ({ sections, blocks, rows, lot
           </Select>
         </FormControl>
 
-        {/* Grave */}
         <FormControl sx={{ width: 160 }} disabled={!selectedLot}>
           <InputLabel>Grave</InputLabel>
-          <Select value={selectedGrave} onChange={(e) => setSelectedGrave(e.target.value)}>
+          <Select 
+            value={selectedGrave} 
+            onChange={(e) => setSelectedGrave(e.target.value)}
+          >
             {graves.length > 0 ? (
               graves.map((grave) => (
-                <MenuItem key={grave} value={grave}>{grave}</MenuItem>
+                <MenuItem key={grave.id} value={grave.id}>{grave.label}</MenuItem>
               ))
             ) : (
               <MenuItem disabled>No Data</MenuItem>
             )}
           </Select>
         </FormControl>
+
       </CardContent>
     </Card>
   );
