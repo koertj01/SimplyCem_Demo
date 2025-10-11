@@ -6,11 +6,10 @@ import L from "leaflet";
 import styles from "./map.module.css";
 import { MaptilerLayer } from "@maptiler/leaflet-maptilersdk";
 
-// Define the type for coordinates
 type Coordinate = [number, number];
 
 interface MapProps {
-  coordinates: Record<number, Coordinate>; // Mapping grave ID → coordinates
+  coordinates: Record<number, Coordinate>;
   selectedGrave: number | null;
   onCoordinateUpdate: (lat: number, lng: number) => void;
 }
@@ -18,7 +17,7 @@ interface MapProps {
 const Map: React.FC<MapProps> = ({ coordinates, selectedGrave, onCoordinateUpdate }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
-  const gravesLayerRef = useRef<L.LayerGroup | null>(null); // Renamed to match the reference used
+  const gravesLayerRef = useRef<L.LayerGroup | null>(null);
 
   const defaultCenter: Coordinate = [40.50406, -80.021671];
   const defaultZoom = 12;
@@ -33,54 +32,73 @@ const Map: React.FC<MapProps> = ({ coordinates, selectedGrave, onCoordinateUpdat
     iconSize: [24, 24],
   });
 
+  const selectedIcon = L.divIcon({
+    className: "selected-icon",
+    html: `
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28" height="28">
+        <path fill="#007BFF" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+      </svg>
+    `,
+    iconSize: [28, 28],
+  });
+
   const memoizedCoordinates = useMemo(() => {
-    // Convert coordinates to an array of { id, coordinates }
     return Object.entries(coordinates).map(([id, coord]) => ({
-      id: Number(id),  // Convert string keys to numbers
+      id: Number(id),
       coordinates: coord,
     }));
   }, [coordinates]);
 
+  // Initialize map and tile layer
   useEffect(() => {
     if (!mapRef.current && mapContainerRef.current) {
-      // Initialize the map
       mapRef.current = L.map(mapContainerRef.current, {
         center: defaultCenter,
         zoom: defaultZoom,
       });
 
-      // Add MapTiler layer
       new MaptilerLayer({ apiKey: "C5ZY4oPOCuUN3zUXVSjR" }).addTo(mapRef.current);
     }
 
     if (!gravesLayerRef.current) {
-      // Initialize graves layer group
       gravesLayerRef.current = L.layerGroup().addTo(mapRef.current!);
     }
+  }, []);
 
-    // Clear existing layers before adding new ones
-    gravesLayerRef.current.clearLayers();
+  // Register click handler only once
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
 
-    // Add markers for all graves
-    memoizedCoordinates.forEach(({ id, coordinates }) => {
-      const marker = L.marker(coordinates, { icon: markerIcon }).addTo(
-        gravesLayerRef.current!
-      );
-
-      // Optionally, add a popup with grave ID or other data
-      marker.bindPopup(`Grave ID: ${id}`);
-    });
-
-    // Listen for mouse clicks to insert new graves
-    mapRef.current?.on("click", (e: L.LeafletMouseEvent) => {
+    const handleClick = (e: L.LeafletMouseEvent) => {
       if (!selectedGrave) {
         console.warn("Please Select a Grave");
         return;
       }
+
       const { lat, lng } = e.latlng;
       onCoordinateUpdate(lat, lng);
+    };
+
+    map.on("click", handleClick);
+    return () => {
+      map.off("click", handleClick);
+    };
+  }, [selectedGrave, onCoordinateUpdate]);
+
+  // Update grave markers
+  useEffect(() => {
+    if (!gravesLayerRef.current) return;
+
+    gravesLayerRef.current.clearLayers();
+
+    memoizedCoordinates.forEach(({ id, coordinates }) => {
+      const icon = selectedGrave === id ? selectedIcon : markerIcon;
+
+      const marker = L.marker(coordinates, { icon }).addTo(gravesLayerRef.current!);
+      marker.bindPopup(`Grave ID: ${id}`);
     });
-  }, [memoizedCoordinates, selectedGrave, onCoordinateUpdate]);
+  }, [memoizedCoordinates, selectedGrave]);
 
   return <div ref={mapContainerRef} className={styles.map}></div>;
 };

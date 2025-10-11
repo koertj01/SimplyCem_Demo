@@ -4,7 +4,7 @@ import HomePage from "./components/Homepage";
 import MappingPage from "./components/Mapping/MappingPage";
 import { WorkOrderForm } from "./components/WorkOrders/WorkOrderForm";
 import SettingsPage from "./components/Settings/SettingsPage";
-import TopNav from "./components/TopNav";
+import Layout from "./components/Layout";
 import { ThemeListener } from "./components/Theme/ThemeListener";
 
 // Root layout with ThemeListener
@@ -22,16 +22,21 @@ const router = createBrowserRouter([
     element: <RootLayout />,
     children: [
       {
-        path: "/",
-        element: <HomePage />,
-      },
-      {
-        path: "/signin",
-        element: <SignInPage />,
+        element: <Layout />,
+        children: [
+          {
+            path: "/",
+            element: <HomePage />,
+          },
+          {
+            path: "/signin",
+            element: <SignInPage />,
+          },
+        ],
       },
       {
         path: "/app",
-        element: <TopNav />,
+        element: <Layout requireAuth />,
         children: [
           { path: "mapping", element: <MappingPage /> },
           { path: "work_orders", element: <WorkOrderForm /> },

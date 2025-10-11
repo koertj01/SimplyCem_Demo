@@ -8,6 +8,7 @@ import {
   Avatar,
   Menu,
   MenuItem,
+  Tooltip,
 } from "@mui/material";
 import { SignOutButton, useUser } from "@clerk/clerk-react";
 import MapIcon from "@mui/icons-material/Map";
@@ -54,46 +55,52 @@ export default function TopNav() {
 
         {/* Right Section */}
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <Avatar 
-            src={user?.imageUrl} 
-            alt={user?.fullName || 'User avatar'}
-            sx={{
-              width: 40,
-              height: 40,
-              cursor: 'pointer',
-            }}
-            onClick={handleMenuOpen}
-          />
-          <IconButton 
-            onClick={handleMenuOpen}
-            aria-label="navigation menu"
+          <Tooltip title={user?.fullName || 'User profile'}>
+            <Avatar 
+              src={user?.imageUrl} 
+              alt={user?.fullName || 'User avatar'}
+              sx={{
+                width: 40,
+                height: 40,
+                cursor: 'pointer',
+              }}
+              onClick={handleMenuOpen}
+            />
+          </Tooltip>
+          
+          <IconButton
+            aria-label="more options"
             aria-controls="menu-appbar"
             aria-haspopup="true"
+            onClick={handleMenuOpen}
+            color="inherit"
           >
             <MoreVertIcon />
           </IconButton>
-          <Menu 
+
+          <Menu
             id="menu-appbar"
-            anchorEl={anchorEl} 
-            open={Boolean(anchorEl)} 
-            onClose={handleMenuClose}
+            anchorEl={anchorEl}
             anchorOrigin={{
               vertical: 'bottom',
               horizontal: 'right',
             }}
+            keepMounted
             transformOrigin={{
               vertical: 'top',
               horizontal: 'right',
             }}
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
           >
-            <MenuItem onClick={() => { navigate("/app/settings"); handleMenuClose(); }}>
-              Settings
-            </MenuItem>
-            <MenuItem onClick={() => { navigate("/app/mapping"); handleMenuClose(); }}>
+            <MenuItem onClick={() => { handleMenuClose(); navigate('/app/mapping'); }}>
               Mapping
             </MenuItem>
-            <MenuItem onClick={() => { navigate("/app/work_orders"); handleMenuClose(); }}>
+            <MenuItem onClick={() => { handleMenuClose(); navigate('/app/work_orders'); }}>
               Work Orders
+            </MenuItem>
+            <MenuItem onClick={() => { handleMenuClose(); navigate('/app/settings'); }}>
+              Settings
             </MenuItem>
             <MenuItem>
               <SignOutButton />

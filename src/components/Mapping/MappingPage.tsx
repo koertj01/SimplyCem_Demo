@@ -15,16 +15,23 @@ const MappingPage: React.FC = () => {
   const [selectedLot, setSelectedLot] = useState<string | null>(null);
   const [selectedGrave, setSelectedGrave] = useState<number | null>(null);
   const [graveCoordinates, setGraveCoordinates] = useState<{ [key: number]: [number, number] }>({});
+  const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
+
 
   async function fetchGraveEntries() {
+    setIsLoading(true);
+    setIsError(false);
     const { data, error } = await supabase
       .from("grave_entries")
       .select("property_id, section, block, row, lot, grave, latitude, longitude");
 
-    if (error) {
-      console.error("Error fetching grave entries:", error);
-      return;
-    }
+      if (error) {
+        console.error("Error fetching grave entries:", error);
+        setIsError(true);
+        setIsLoading(false);
+        return;
+      }
 
     if (data) {
       setSections([...new Set(data.map((item) => item.section))]);
@@ -47,6 +54,7 @@ const MappingPage: React.FC = () => {
         }, {} as Record<number, [number, number]>)
       );
     }
+    setIsLoading(false);
   }
 
   useEffect(() => {
@@ -103,6 +111,8 @@ const MappingPage: React.FC = () => {
         setSelectedRow={setSelectedRow}
         setSelectedLot={setSelectedLot}
         setSelectedGrave={setSelectedGrave} 
+        isLoading={isLoading}
+        isError={isError}
       />
       <Map coordinates={Object.values(graveCoordinates)} selectedGrave={selectedGrave} onCoordinateUpdate={updateGraveCoordinates} />
     </div>
