@@ -11,16 +11,32 @@ type Coordinate = [number, number];
 interface MapProps {
   coordinates: Record<number, Coordinate>;
   selectedGrave: number | null;
+  selectedCemetery: string | null;
   onCoordinateUpdate: (lat: number, lng: number) => void;
 }
 
-const Map: React.FC<MapProps> = ({ coordinates, selectedGrave, onCoordinateUpdate }) => {
+const Map: React.FC<MapProps> = ({ coordinates, selectedGrave, selectedCemetery, onCoordinateUpdate }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
   const gravesLayerRef = useRef<L.LayerGroup | null>(null);
 
+  // Define cemetery centers
+  const cemeteryCenters: Record<string, Coordinate> = {
+    'Oakwood Memorial': [42.123456, -71.234567],
+    'Riverside Cemetery': [42.125456, -71.237567],
+    // Add more cemeteries as needed
+  };
+
   const defaultCenter: Coordinate = [40.50406, -80.021671];
   const defaultZoom = 12;
+  
+  // Get center coordinates based on selected cemetery
+  const getCenterCoordinates = (): Coordinate => {
+    if (selectedCemetery && cemeteryCenters[selectedCemetery]) {
+      return cemeteryCenters[selectedCemetery];
+    }
+    return defaultCenter;
+  };
 
   const markerIcon = L.divIcon({
     className: "custom-icon",
@@ -52,8 +68,9 @@ const Map: React.FC<MapProps> = ({ coordinates, selectedGrave, onCoordinateUpdat
   // Initialize map and tile layer
   useEffect(() => {
     if (!mapRef.current && mapContainerRef.current) {
+      const center = getCenterCoordinates();
       mapRef.current = L.map(mapContainerRef.current, {
-        center: defaultCenter,
+        center: center,
         zoom: defaultZoom,
       });
 
@@ -99,6 +116,14 @@ const Map: React.FC<MapProps> = ({ coordinates, selectedGrave, onCoordinateUpdat
       marker.bindPopup(`Grave ID: ${id}`);
     });
   }, [memoizedCoordinates, selectedGrave]);
+
+  // Update map center when cemetery changes
+  useEffect(() => {
+    if (!mapRef.current) return;
+    
+    const center = getCenterCoordinates();
+    mapRef.current.setView(center, defaultZoom);
+  }, [selectedCemetery]);
 
   return <div ref={mapContainerRef} className={styles.map}></div>;
 };

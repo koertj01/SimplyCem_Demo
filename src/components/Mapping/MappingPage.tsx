@@ -4,11 +4,13 @@ import Map from "./Map";
 import MappingTools from "./MappingTools";
 
 const MappingPage: React.FC = () => {
+  const [cemeteries, setCemeteries] = useState<string[]>([]);
   const [sections, setSections] = useState<string[]>([]);
   const [blocks, setBlocks] = useState<string[]>([]);
   const [rows, setRows] = useState<string[]>([]);
   const [lots, setLots] = useState<string[]>([]);
   const [graves, setGraves] = useState<{ id: number; label: string }[]>([]);
+  const [selectedCemetery, setSelectedCemetery] = useState<string | null>(null);
   const [selectedSection, setSelectedSection] = useState<string | null>(null);
   const [selectedBlock, setSelectedBlock] = useState<string | null>(null);
   const [selectedRow, setSelectedRow] = useState<string | null>(null);
@@ -24,7 +26,7 @@ const MappingPage: React.FC = () => {
     setIsError(false);
     const { data, error } = await supabase
       .from("grave_entries")
-      .select("property_id, section, block, row, lot, grave, latitude, longitude");
+      .select("property_id, cemetery, section, block, row, lot, grave, latitude, longitude");
 
       if (error) {
         console.error("Error fetching grave entries:", error);
@@ -34,19 +36,31 @@ const MappingPage: React.FC = () => {
       }
 
     if (data) {
-      setSections([...new Set(data.map((item) => item.section))]);
-      setBlocks([...new Set(data.map((item) => item.block))]);
-      setRows([...new Set(data.map((item) => item.row))]);
-      setLots([...new Set(data.map((item) => item.lot))]);
+      setCemeteries([...new Set(data.map((item) => item.cemetery))]);
+      
+      // Filter data based on selected cemetery
+      const filteredData = selectedCemetery
+        ? data.filter(item => item.cemetery === selectedCemetery)
+        : data;
+
+      setSections([...new Set(filteredData.map((item) => item.section))]);
+      setBlocks([...new Set(filteredData.map((item) => item.block))]);
+      setRows([...new Set(filteredData.map((item) => item.row))]);
+      setLots([...new Set(filteredData.map((item) => item.lot))]);
       setGraves(
-        data.map((item) => ({
+        filteredData.map((item) => ({
           id: item.property_id,
-          label: `${item.section}-${item.block}-${item.row}-${item.lot}`,
+          label: `${item.cemetery}-${item.section}-${item.block}-${item.row}-${item.lot}`,
         }))
       );
 
+      // Filter coordinates based on selected cemetery
+      const coordinatesData = selectedCemetery
+        ? data.filter(item => item.cemetery === selectedCemetery)
+        : data;
+
       setGraveCoordinates(
-        data.reduce((acc, item) => {
+        coordinatesData.reduce((acc, item) => {
           if (item.latitude && item.longitude) {
             acc[item.property_id] = [item.latitude, item.longitude];
           }
@@ -95,26 +109,34 @@ const MappingPage: React.FC = () => {
 
   return (
     <div>
-      <MappingTools 
+      <MappingTools
+        cemeteries={cemeteries}
         sections={sections}
         blocks={blocks}
         rows={rows}
         lots={lots}
         graves={graves}
+        selectedCemetery={selectedCemetery}
         selectedSection={selectedSection}
         selectedBlock={selectedBlock}
         selectedRow={selectedRow}
         selectedLot={selectedLot}
         selectedGrave={selectedGrave}
+        setSelectedCemetery={setSelectedCemetery}
         setSelectedSection={setSelectedSection}
         setSelectedBlock={setSelectedBlock}
         setSelectedRow={setSelectedRow}
         setSelectedLot={setSelectedLot}
-        setSelectedGrave={setSelectedGrave} 
+        setSelectedGrave={setSelectedGrave}
         isLoading={isLoading}
         isError={isError}
       />
-      <Map coordinates={Object.values(graveCoordinates)} selectedGrave={selectedGrave} onCoordinateUpdate={updateGraveCoordinates} />
+      <Map 
+        coordinates={graveCoordinates}
+        selectedGrave={selectedGrave}
+        selectedCemetery={selectedCemetery}
+        onCoordinateUpdate={updateGraveCoordinates}
+      />
     </div>
   );
 };
